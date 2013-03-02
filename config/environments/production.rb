@@ -75,8 +75,8 @@ WordPyramid::Application.configure do
     domain: "word-pyramid.herokuapp.com",
     authentication: "plain",
     enable_starttls_auto: true,
-    user_name: ENV["GMAIL_USERNAME"],
-    password: ENV["GMAIL_PASSWORD"]
+    user_name: ENV["EMAIL_USER_NAME"],
+    password: ENV["EMAIL_PASSWORD"]
   }
 
 
