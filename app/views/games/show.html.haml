@@ -7,7 +7,3 @@
 %p
   %b Player two:
   = @game.player_two ? @game.player_two.name : "Awaiting Opponent"
-
-= link_to 'Edit', edit_game_path(@game)
-\|
-= link_to 'Back', games_path
