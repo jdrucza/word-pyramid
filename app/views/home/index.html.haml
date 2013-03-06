@@ -1,4 +1,16 @@
-%h3 Home
-- @users.each do |user|
+= render 'layouts/messages'
+%h3 Welcome
+-if current_user
   %p
-    User: #{link_to user.name, user}
+    Hi #{current_user.name}!
+  %p
+    = simple_form_for(@game) do |f|
+      = f.error_notification
+      = f.button :submit, "New Game", :class => 'btn-primary'
+-else
+  %p
+    Welcome to the awesome game
+    %span.title
+      Word Pyramid.
+  %p
+    #{link_to 'Login', new_user_session_path} or #{link_to 'Sign up', new_user_registration_path} to get started.

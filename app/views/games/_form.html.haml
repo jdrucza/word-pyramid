@@ -1,0 +1,12 @@
+= simple_form_for(@game) do |f|
+  = f.error_notification
+
+  %h3
+    = @game.current_word
+
+  .form-inputs
+    = f.input :prepend_letter
+    = f.input :append_letter
+
+  .form-actions
+    = f.button :submit

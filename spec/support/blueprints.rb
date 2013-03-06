@@ -9,5 +9,15 @@ require 'machinist/active_record'
 #   end
 
 User.blueprint do
-  # Attributes here
+  name {"User-#{sn}"}
+  email {"User-#{sn}@nowhere.com"}
+  password {"password"}
+end
+
+Game.blueprint do
+  player_one {Player.make!}
+end
+
+Player.blueprint do
+  user {User.make!}
 end

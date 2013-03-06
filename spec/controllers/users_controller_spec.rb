@@ -3,13 +3,14 @@ require 'spec_helper'
 describe UsersController do
 
   before (:each) do
-    @user = FactoryGirl.create(:user)
+    @user = User.make!
     sign_in @user
   end
 
   describe "GET 'show'" do
     
     it "should be successful" do
+      puts "==========!!!!!!!!!!       AHHHHHHHHHHHHHHHHH!!!!!!!!     ========"
       get :show, :id => @user.id
       response.should be_success
     end

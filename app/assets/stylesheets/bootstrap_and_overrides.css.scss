@@ -1,3 +1,28 @@
+$bodyBackground: #ffffee;
+$navbarBackgroundHighlight: #ffff99;
+$inputBackground: #ffffcc;
+$gridColumns: 4;
+//$linkColor: #009900;
 @import "bootstrap";
-body { padding-top: 60px; }
+body { padding-top: 40px; }
 @import "bootstrap-responsive";
+
+// Template for customising button visuals
+//a {
+//  color: $darkblue;
+//  &:active, &:link, &:hover {
+//    color: $darkestblue;
+//  }
+//  &.btn-primary {
+//    color: $white;
+//  }
+//}
+//
+//.btn-primary {
+//  @include background-image($blue-gradient);
+//  background-color: $darkblue;
+//  border-color: $darkblue;
+//  &:hover, &:active, &.active, &.disabled, &[disabled] {
+//    background-color: $darkblue;
+//  }
+//}

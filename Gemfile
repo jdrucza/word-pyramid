@@ -17,6 +17,7 @@ gem "cucumber-rails", ">= 1.3.0", :group => :test, :require => false
 gem "launchy", ">= 2.2.0", :group => :test
 gem "capybara", ">= 2.0.2", :group => :test
 gem "machinist", ">= 2.0", :group => :test
+gem "compass-rails"
 gem "bootstrap-sass", ">= 2.3.0.0"
 gem "devise", ">= 2.2.3"
 gem "devise_invitable", ">= 1.1.5"
