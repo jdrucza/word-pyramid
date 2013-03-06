@@ -40,14 +40,18 @@ class GamesController < ApplicationController
   # POST /games
   # POST /games.json
   def create
-    @game = Game.join_new(current_user)
+    # TODO only allowing one game is for prototype only which is also the reason the logic is in the controller rather than
+    # the model
+    @game = Game.being_played_by(current_user).first
+
+    @game = Game.join_new(current_user) unless @game
 
     respond_to do |format|
-      if @game.save
-        format.html { redirect_to @game, notice: 'Game was successfully created.' }
+      if @game
+        format.html { redirect_to @game, notice: 'Game joined.' }
         format.json { render json: @game, status: :created, location: @game }
       else
-        format.html { render action: "new" }
+        format.html { redirect_to home_url, :notice => "Unable to start a new game at this time, please try again later." }
         format.json { render json: @game.errors, status: :unprocessable_entity }
       end
     end

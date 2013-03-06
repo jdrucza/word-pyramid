@@ -2,10 +2,42 @@ $bodyBackground: #ffffee;
 $navbarBackgroundHighlight: #ffff99;
 $inputBackground: #ffffcc;
 $gridColumns: 4;
+$gridColumnWidth: 100px;
+$gridGutterWidth: 30px;
+$gridColumnWidth1200: 100px;
+$gridColumnWidth768: 65px;
 //$linkColor: #009900;
 @import "bootstrap";
-body { padding-top: 40px; }
 @import "bootstrap-responsive";
+
+///* Large desktop */
+@media (min-width: 980px) {
+  body { padding-top: 40px; }
+}
+
+///* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+  body { padding-top: 0px; }
+  .navbar-fixed-top {
+    margin-bottom: 0px;
+  }
+}
+
+///* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+  body { padding-top: 0px; }
+  .navbar-fixed-top {
+    margin-bottom: 0px;
+  }
+}
+
+///* Landscape phones and down */
+@media (max-width: 480px) {
+  body { padding-top: 0; }
+  .navbar-fixed-top {
+    margin-bottom: 0px;
+  }
+}
 
 // Template for customising button visuals
 //a {

@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   def index
     if current_user
-      @games = current_user.games
+      @games = Game.being_played_by(current_user)
       if @games.first
         redirect_to @games.first
       else
