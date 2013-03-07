@@ -9,12 +9,14 @@
       width: 20px;
       height: 20px;
       text-align: center;
+      text-transform: uppercase;
     }
   }
   .played_letters {
     display: inline-block;
-    width: 240px;
-    height: 300px;
+    width: 200px;
+    max-height: 260px;
+    overflow: scroll;
   }
 
 }
