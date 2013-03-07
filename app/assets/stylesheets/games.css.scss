@@ -1,3 +1,20 @@
 // Place all the styles related to the Games controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.game {
+  text-align: center;
+  .prepend_letter, .append_letter {
+    display: inline-block;
+    input {
+      width: 20px;
+      height: 20px;
+      text-align: center;
+    }
+  }
+  .played_letters {
+    display: inline-block;
+    width: 240px;
+    height: 300px;
+  }
+
+}

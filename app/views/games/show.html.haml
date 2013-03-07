@@ -1,9 +1,13 @@
-%p
-  %b Current word:
-  = @game.current_word
-%p
-  %b Player one:
-  = @game.player_one.name
-%p
-  %b Player two:
-  = @game.player_two ? @game.player_two.name : "Awaiting Opponent"
+.game
+  %h4
+    #{@game.description}
+  %p
+    %b Current word:
+    = @game.current_word
+  .pyramid
+    .prepend_letter
+      %input{:type => "text", :name => "prepend_letter", :class => "text", :maxlength => 1}
+    .played_letters
+      =@game.current_word
+    .append_letter
+      %input{:type => "text", :name => "append_letter", :class => "text", :maxlength => 1}

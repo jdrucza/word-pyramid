@@ -28,8 +28,16 @@ class Game < ActiveRecord::Base
     player.save!
   end
 
+  def player_one_name
+    player_one ? player_one.name : "No-one"
+  end
+
+  def player_two_name
+    player_two ? player_two.name : "Awaiting Opponent"
+  end
+
   def description
-    "#{player_one.name} VS #{player_two.name}"
+    "#{player_one_name} vs #{player_two_name}"
   end
 
   scope :waiting_for_player_two, where(:player_two_id => nil)
