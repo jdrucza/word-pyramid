@@ -5,6 +5,39 @@ class Game < ActiveRecord::Base
   belongs_to :player_two, :class_name => "Player", :dependent => :destroy
   has_many :players
 
+  state_machine :state, :initial => :player_one_turn do
+    state :player_one_turn
+    state :player_two_turn
+    state :challenge_player_one
+    state :challenge_player_two
+    state :game_over
+
+    event :turn_played do
+      transition :player_one_turn => :player_two_turn
+      transition :player_two_turn => :player_one_turn
+    end
+
+    event :word_completed do
+      transition :player_one_turn => :game_over
+      transition :player_two_turn => :game_over
+    end
+
+    event :challenge_made do
+      transition :player_one_turn => :challenge_player_two
+      transition :player_two_turn => :challenge_player_one
+    end
+
+    event :challenge_won do
+      transition :challenge_player_one => :game_over
+      transition :challenge_player_two => :game_over
+    end
+
+    event :challenge_lost do
+      transition :challenge_player_one => :game_over
+      transition :challenge_player_two => :game_over
+    end
+  end
+
   def self.join_new(user)
     # Check if game without second player exists else create new
     available_game = self.waiting_for_player_two.not_being_played_by(user).first
