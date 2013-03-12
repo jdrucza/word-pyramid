@@ -2,17 +2,26 @@
   %h4
     #{@game.description}
   %p
-    %b
+    %b#prompt
+      - current_users_turn = @game.users_turn?(current_user)
+      - opponent = @game.opponent(current_user)
+      -if ((@game.player_one_won? and (@game.player_one.user == current_user)) or (@game.player_two_won? and (@game.player_two.user == current_user)))
+        You WON!!!
+      -elsif @game.over?
+        You LOST!!!
+      -elsif current_users_turn
+        Your turn!
+      -elsif opponent
+        #{opponent.name}'s turn...
   .pyramid
     .prepend_letter
-      %input{:type => "text", :name => "prepend_letter", :class => "text", :maxlength => 1, :disabled => (@game.users_turn?(current_user) ? false:true)}
+      =text_field_tag("prepend_letter", "", maxlength: 1, disabled: !current_users_turn)
     .played_letters
       =@game.current_word
     .append_letter
-      =text_field_tag("append_letter", "", maxlength: 1, disabled: !(@game.users_turn?(current_user)))
-      -#%input{:type => "text", :name => "append_letter", :class => "text", :maxlength => 1}
+      =text_field_tag("append_letter", "", maxlength: 1, disabled: !current_users_turn)
   .buttons
-    =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn'
+    =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn', disabled: !current_users_turn
   #turn_form
     =simple_form_for [@game,@turn], remote: true do |f|
       =f.input :letter

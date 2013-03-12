@@ -50,7 +50,7 @@ class TurnsController < ApplicationController
     respond_to do |format|
       if turn.persisted?
         format.html { redirect_to @game, notice: 'Turn was successfully played.' }
-        format.json { render json: @game, status: :created, location: @game }
+        format.json { render json: @game, status: :accepted, location: @game }
       else
         format.html { redirect_to @game, notice: 'Turn failed.' }
         format.json { render json: @turn.errors, status: :unprocessable_entity }

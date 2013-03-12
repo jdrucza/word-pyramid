@@ -16,18 +16,21 @@ $ ->
     $("#turn_position")[0].value = "E"
 
   $("#submit_turn").click (event)->
+    $(this).attr('disabled','disabled')
     turn_form = $("#turn_form > form")
     url = turn_form.attr('action')
-    auth_token = turn_form.find('[name=authenticity_token]')[0].value
-    letter = $("#turn_letter")[0].value
-    position = $("#turn_position")[0].value
     $.post(url+'.json',
       auth_token: turn_form.find('[name=authenticity_token]')[0].value
       letter: $("#turn_letter")[0].value
       position: $("#turn_position")[0].value
     ).done((data)->
-      alert("Hooray!")
-      alert(data)
-      $(".prepend_letter input").attr('disabled', 'disabled')
-      $(".append_letter input").attr('disabled', 'disabled')
+      alert("Turn played.")
+#      alert(data[0])
+#      alert(data[1])
+#      alert(data[2])
+#      alert(data['current_letter'])
+      $("#prompt").html("Refresh your browser to check for your turn...")
+      $(".prepend_letter input").attr('disabled', 'disabled')[0].value = ""
+      $(".append_letter input").attr('disabled', 'disabled')[0].value = ""
+
     )

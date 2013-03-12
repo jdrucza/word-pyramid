@@ -60,6 +60,15 @@ class Game < ActiveRecord::Base
     players.where("user_id = #{user.id}").first
   end
 
+  def opponent(player_or_user)
+    player = player_or_user.is_a?(Player) ? player_or_user : player_for_user(player_or_user)
+    player_one == player ? player_two : player_one
+  end
+
+  def over?
+    player_one_won? or player_two_won?
+  end
+
   def play_turn(turn, user)
     player = player_for_user(user)
     turn.player = player
@@ -90,7 +99,7 @@ class Game < ActiveRecord::Base
 
   def self.join_new(user)
     # Check if game without second player exists else create new
-    available_game = self.waiting_for_player_two.not_being_played_by(user).first
+    available_game = self.waiting_for_player_two.not_being_played_by(user).readonly(false).first
     player = Player.create!(:user_id => user.id)
     unless available_game
       available_game = Game.new
@@ -106,8 +115,6 @@ class Game < ActiveRecord::Base
     else
       self.player_one = player
     end
-    self.save!
-    player.game = self
     player.save!
   end
 
@@ -124,7 +131,7 @@ class Game < ActiveRecord::Base
   end
 
   scope :waiting_for_player_two, where(:player_two_id => nil)
-  scope :not_being_played_by, lambda{|user| joins(:players).where('players.user_id != ?', user.id)} #TODO add state NOT equal to complete
-  scope :being_played_by, lambda{|user| joins(:players).where('players.user_id = ?', user.id)} #TODO add state NOT equal to complete
-  scope :played_by, lambda{|user| joins(:players).where('players.user_id = ?', user.id)} #TODO add state equal to complete
+  scope :not_being_played_by, lambda{|user| joins(:players).where("players.user_id != ? and state not in ('player_two_won','player_one_won')", user.id)}
+  scope :being_played_by, lambda{|user| joins(:players).where("players.user_id = ? and state not in ('player_two_won','player_one_won')", user.id)}
+  scope :played_by, lambda{|user| joins(:players).where('players.user_id = ?', user.id)} #TODO add state equal to complete, maybe....
 end

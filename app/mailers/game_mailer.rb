@@ -33,4 +33,16 @@ class GameMailer < ActionMailer::Base
 
     mail to: "to@example.org"
   end
+
+  def you_won(game, player)
+    @game = game
+    @player = player
+    mail to: player.email
+  end
+
+  def you_lost(game, player)
+    @game = game
+    @player = player
+    mail to: player.email
+  end
 end
