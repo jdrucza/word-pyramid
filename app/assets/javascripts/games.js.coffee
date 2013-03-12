@@ -6,9 +6,9 @@ page_vars = {}
 
 spinner_opts =
   lines: 15 # The number of lines to draw
-  length: 13 # The length of each line
+  length: 10 # The length of each line
   width: 2 # The line thickness
-  radius: 6 # The radius of the inner circle
+  radius: 7 # The radius of the inner circle
   corners: 1 # Corner roundness (0..1)
   rotate: 0 # The rotation offset
   color: "#000" # #rgb or #rrggbb
@@ -19,10 +19,10 @@ spinner_opts =
   className: "spinner" # The CSS class to assign to the spinner
   zIndex: 2e9 # The z-index (defaults to 2000000000)
   top: "auto" # Top position relative to parent in px
-  left: "auto" # Left position relative to parent in px
+  left: "82" # Left position relative to parent in px
 
 showSpinner = ()->
-  target = $("#prompt")[0]
+  target = $(".played_letters")[0]
   page_vars['spinner'] = new Spinner(spinner_opts) unless page_vars['spinner']
   page_vars['spinner'].spin(target)
 
@@ -54,7 +54,7 @@ $ ->
       position: $("#turn_position")[0].value
     ).done((data)->
       alert("Turn played.")
-#      alert(data[0])
+      alert($(data).serialize)
 #      alert(data[1])
 #      alert(data[2])
 #      alert(data['current_letter'])
