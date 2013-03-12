@@ -1,6 +1,8 @@
 // Place all the styles related to the Games controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@import "compass/css3";
+
 .game {
   text-align: center;
   .prepend_letter, .append_letter {
@@ -12,11 +14,16 @@
       text-transform: uppercase;
     }
   }
+  .disabled {
+    @include opacity(0);
+  }
   .played_letters {
     display: inline-block;
     width: 200px;
     max-height: 260px;
     overflow: scroll;
   }
-
+  #turn_form {
+    display: none;
+  }
 }

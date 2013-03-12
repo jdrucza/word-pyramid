@@ -2,11 +2,20 @@
   %h4
     #{@game.description}
   %p
-    %b Game play coming soon...
+    %b
   .pyramid
     .prepend_letter
-      %input{:type => "text", :name => "prepend_letter", :class => "text", :maxlength => 1}
+      %input{:type => "text", :name => "prepend_letter", :class => "text", :maxlength => 1, :disabled => (@game.users_turn?(current_user) ? false:true)}
     .played_letters
       =@game.current_word
     .append_letter
-      %input{:type => "text", :name => "append_letter", :class => "text", :maxlength => 1}
+      =text_field_tag("append_letter", "", maxlength: 1, disabled: !(@game.users_turn?(current_user)))
+      -#%input{:type => "text", :name => "append_letter", :class => "text", :maxlength => 1}
+  .buttons
+    =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn'
+  #turn_form
+    =simple_form_for [@game,@turn], remote: true do |f|
+      =f.input :letter
+      =f.input :position
+  =hidden_field_tag("selected_letter", " ", :id => 'selected_letter')
+  =hidden_field_tag("position", "S", :id => 'position')

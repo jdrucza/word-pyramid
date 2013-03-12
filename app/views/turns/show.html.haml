@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Letter:
+  = @turn.letter
+%p
+  %b Position:
+  = @turn.position
+%p
+  %b Player:
+  = @turn.player_id
+%p
+  %b Game:
+  = @turn.game_id
+
+= link_to 'Edit', edit_turn_path(@turn)
+\|
+= link_to 'Back', turns_path

@@ -1,0 +1,25 @@
+%h1 Listing turns
+
+%table
+  %tr
+    %th Letter
+    %th Position
+    %th Player
+    %th Game
+    %th
+    %th
+    %th
+
+  - @turns.each do |turn|
+    %tr
+      %td= turn.letter
+      %td= turn.position
+      %td= turn.player_id
+      %td= turn.game_id
+      %td= link_to 'Show', turn
+      %td= link_to 'Edit', edit_turn_path(turn)
+      %td= link_to 'Destroy', turn, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Turn', new_turn_path

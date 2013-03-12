@@ -14,6 +14,7 @@ class GamesController < ApplicationController
   # GET /games/1.json
   def show
     @game = Game.find(params[:id])
+    @turn = Turn.new
 
     respond_to do |format|
       format.html # show.html.erb
@@ -64,6 +65,32 @@ class GamesController < ApplicationController
 
     respond_to do |format|
       if @game.update_attributes(params[:game])
+        format.html { redirect_to @game, notice: 'Game was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @game.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def prepend_letter
+    @game = Game.find(params[:id])
+    respond_to do |format|
+      if @game.prepend_letter(params[:letter], current_user)
+        format.html { redirect_to @game, notice: 'Well played!' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @game.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def append_letter
+    @game = Game.find(params[:id])
+    respond_to do |format|
+      if @game.append_letter(params[:letter], current_user)
         format.html { redirect_to @game, notice: 'Game was successfully updated.' }
         format.json { head :no_content }
       else

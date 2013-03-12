@@ -21,3 +21,8 @@ end
 Player.blueprint do
   user {User.make!}
 end
+
+Turn.blueprint do
+  letter {("A".ord + sn.to_i).chr}
+  position {"S"}
+end

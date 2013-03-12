@@ -1,0 +1,11 @@
+= simple_form_for(@turn) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :letter
+    = f.input :position
+    = f.input :player_id
+    = f.input :game_id
+
+  .form-actions
+    = f.button :submit
