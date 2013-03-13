@@ -5,7 +5,6 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
 end
-gem 'sqlite3'
 gem 'jquery-rails'
 gem 'state_machine'
 gem "unicorn", ">= 4.3.1"
