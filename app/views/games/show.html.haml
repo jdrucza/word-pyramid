@@ -27,10 +27,11 @@
       =text_field_tag("append_letter", "", maxlength: 1, disabled: !current_users_turn)
   .buttons
     =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn', disabled: !current_users_turn
+    =submit_tag "Challenge", :class => 'btn btn-primary', :id => 'submit_challenge', disabled: !current_users_turn
   #turn_form
     =simple_form_for [@game,@turn], remote: true do |f|
       =f.input :letter
       =f.input :position
-  =hidden_field_tag("selected_letter", " ", :id => 'selected_letter')
-  =hidden_field_tag("position", "S", :id => 'position')
+  =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
+  =hidden_field_tag("auth_token", form_authenticity_token, :id => 'auth_token')
   =hidden_field_tag("last_word", @game.current_word, :id => 'last_word')

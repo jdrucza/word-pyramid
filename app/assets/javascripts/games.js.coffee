@@ -30,36 +30,44 @@ hideSpinner = ()->
   game_page_vars['spinner'].stop()
 
 updateGame = (data)->
-  unless $("#last_word")[0].value is data['current_word']
+  alert("last_word vs current_word is "+game_page_vars.last_word+" vs "+data['current_word'])
+  unless game_page_vars.last_word is data['current_word']
     $(".played_letters").append(data['current_word']+"<br/>")
-    $("#last_word")[0].value = data['current_word']
+    game_page_vars.last_word = data['current_word']
 
 $ ->
+  game_page_vars.turn_form_url = $("#turn_form_url")[0].value
+  game_page_vars.auth_token = $("#auth_token")[0].value
+  game_page_vars.last_word = $("#last_word")[0].value
+
   $(".pyramid input").keypress (event)->
     $(".pyramid input").each (index)->
       this.value = ""
     @value = String.fromCharCode(event.which)
-    $("#turn_letter")[0].value = @value
+    game_page_vars.turn_letter = @value
 
   $(".prepend_letter input").keypress (event)->
-    $("#turn_position")[0].value = "S"
+    game_page_vars.turn_position = "S"
 
   $(".append_letter input").keypress (event)->
-    $("#turn_position")[0].value = "E"
+    game_page_vars.turn_position = "E"
+
+  $("#submit_challenge").click (event)->
+    alert("Challenge issued!!")
 
   $("#submit_turn").click (event)->
     $(this).attr('disabled','disabled')
     $(".prepend_letter input").attr('disabled', 'disabled')[0].value = ""
     $(".append_letter input").attr('disabled', 'disabled')[0].value = ""
-    $("#prompt").html("")
+    $("#prompt").html("Validating your entry...")
     showSpinner()
-    turn_form = $("#turn_form > form")
-    url = turn_form.attr('action')
-    $.post(url+'.json',
-      auth_token: turn_form.find('[name=authenticity_token]')[0].value
-      letter: $("#turn_letter")[0].value
-      position: $("#turn_position")[0].value
+
+    $.post(game_page_vars.turn_form_url+'.json',
+      auth_token: game_page_vars.auth_token
+      letter: game_page_vars.turn_letter
+      position: game_page_vars.turn_position
     ).done((data)->
       hideSpinner()
+      $("#prompt").html("Refresh your browser to check for your turn...")
       updateGame(data)
     )
