@@ -30,13 +30,13 @@ hideSpinner = ()->
   game_page_vars['spinner'].stop()
 
 updateGame = (data)->
-  alert("last_word vs current_word is "+game_page_vars.last_word+" vs "+data['current_word'])
   unless game_page_vars.last_word is data['current_word']
     $(".played_letters").append(data['current_word']+"<br/>")
     game_page_vars.last_word = data['current_word']
 
 $ ->
   game_page_vars.turn_form_url = $("#turn_form_url")[0].value
+  game_page_vars.game_challenge_url = $("#game_challenge_url")[0].value
   game_page_vars.auth_token = $("#auth_token")[0].value
   game_page_vars.last_word = $("#last_word")[0].value
 
@@ -53,7 +53,15 @@ $ ->
     game_page_vars.turn_position = "E"
 
   $("#submit_challenge").click (event)->
-    alert("Challenge issued!!")
+    $("#prompt").html("Issuing challenge...")
+    showSpinner()
+    $.post(game_page_vars.game_challenge_url+'.json',
+      auth_token: game_page_vars.auth_token
+    ).done((data)->
+      hideSpinner()
+      $("#prompt").html("Challenge issued. Refresh your browser to check for challenge response...")
+      updateGame(data)
+    )
 
   $("#submit_turn").click (event)->
     $(this).attr('disabled','disabled')

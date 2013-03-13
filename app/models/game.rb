@@ -57,20 +57,35 @@ class Game < ActiveRecord::Base
   end
 
   def player_for_user(user)
-    players.where("user_id = #{user.id}").first
+    players.where("user_id = #{user.id}").first or raise("User is not playing this game!")
   end
 
-  def opponent(player_or_user)
+  def ensure_player(player_or_user)
     player = player_or_user.is_a?(Player) ? player_or_user : player_for_user(player_or_user)
+    player.game == self ? player : raise("Player is not playing this game!")
+  end
+
+  def opponent(player)
+    player = ensure_player(player)
     player_one == player ? player_two : player_one
+  end
+
+  def player_one?(user)
+    player = ensure_player(user)
+    @game.player_one == player
+  end
+
+  def player_two?(user)
+    player = ensure_player(user)
+    @game.player_two == player
   end
 
   def over?
     player_one_won? or player_two_won?
   end
 
-  def play_turn(turn, user)
-    player = player_for_user(user)
+  def play_turn(turn, player)
+    player = ensure_player(player)
     turn.player = player
     if players_turn?(player)
       turns << turn
@@ -85,12 +100,30 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def challenge(player)
+    player = ensure_player(player)
+    if players_turn?(player)
+      challenge_made
+      save!
+    end
+  end
+
   def players_turn?(player)
     player and ((player_one_turn? and player == player_one) or (player_two_turn? and player == player_two))
   end
 
   def users_turn?(user)
     players_turn?(player_for_user(user))
+  end
+
+  def challenged?(player)
+    player = ensure_player(player)
+    ((challenge_player_one? and (player == player_one)) or (challenge_player_two? and (player == player_two)))
+  end
+
+  def challenger?(player)
+    player = ensure_player(player)
+    ((challenge_player_one? and (player == player_two)) or (challenge_player_two? and (player == player_one)))
   end
 
   def current_word

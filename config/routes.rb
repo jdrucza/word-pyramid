@@ -3,8 +3,8 @@ WordPyramid::Application.routes.draw do
   resources :games do
     resources :turns
     member do
-      post :prepend_letter
-      post :append_letter
+      post :challenge
+      post :respond_to_challenge
     end
   end
 

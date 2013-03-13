@@ -9,6 +9,10 @@
         You WON!!!
       -elsif @game.over?
         You LOST!!!
+      -elsif @game.challenged?(current_user)
+        You've been CHALLENGED!
+      -elsif @game.challenger?(current_user)
+        Waiting for challenge response from #{opponent.name}...
       -elsif current_users_turn
         Your turn!
       -elsif opponent
@@ -33,5 +37,6 @@
       =f.input :letter
       =f.input :position
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
+  =hidden_field_tag("game_challenge_url", challenge_game_path(@game), :id => 'game_challenge_url')
   =hidden_field_tag("auth_token", form_authenticity_token, :id => 'auth_token')
   =hidden_field_tag("last_word", @game.current_word, :id => 'last_word')

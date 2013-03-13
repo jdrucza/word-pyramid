@@ -22,6 +22,10 @@ class GamesController < ApplicationController
     end
   end
 
+  def spectate
+    # TODO - this could be awesome...
+  end
+
   # GET /games/new
   # GET /games/new.json
   def new
@@ -53,6 +57,34 @@ class GamesController < ApplicationController
         format.json { render json: @game, status: :created, location: @game }
       else
         format.html { redirect_to home_url, :notice => "Unable to start a new game at this time, please try again later." }
+        format.json { render json: @game.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def challenge
+    @game = Game.find(params[:id])
+
+    respond_to do |format|
+      if @game.challenge(current_user)
+        format.html { redirect_to @game, notice: 'Challenge accepted.' }
+        format.json { render json: @game, status: :accepted, location: @game }
+      else
+        format.html { redirect_to home_url, :notice => "Challenge failed, please contact support." }
+        format.json { render json: @game.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def respond_to_challenge
+    @game = Game.find(params[:id])
+
+    respond_to do |format|
+      if @game.respond_to_challenge(params[:challenge_response],current_user)
+        format.html { redirect_to @game, notice: 'Challenge accepted.' }
+        format.json { render json: @game, status: :accepted, location: @game }
+      else
+        format.html { redirect_to home_url, :notice => "Challenge failed, please contact support." }
         format.json { render json: @game.errors, status: :unprocessable_entity }
       end
     end
