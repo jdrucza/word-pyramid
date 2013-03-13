@@ -4,7 +4,7 @@ class Game < ActiveRecord::Base
   belongs_to :player_one, :class_name => "Player", :dependent => :destroy
   belongs_to :player_two, :class_name => "Player", :dependent => :destroy
   has_many :players
-  has_many :turns
+  has_many :turns, :dependent => :destroy
 
   def player_one=(player)
     players << player
@@ -45,7 +45,7 @@ class Game < ActiveRecord::Base
   end
 
   def word_valid?(word)
-    word.length > 4 and Word.where(word: current_word).exists?
+    word.length > 4 and Word.exists?(current_word)
   end
 
   def current_word_valid?
