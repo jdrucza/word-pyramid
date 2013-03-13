@@ -45,7 +45,7 @@ class Game < ActiveRecord::Base
   end
 
   def word_valid?(word)
-    word.length > 4
+    word.length > 4 and Word.where(word: current_word).exists?
   end
 
   def current_word_valid?
