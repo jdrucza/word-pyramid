@@ -17,7 +17,12 @@
     .prepend_letter
       =text_field_tag("prepend_letter", "", maxlength: 1, disabled: !current_users_turn)
     .played_letters
-      =@game.current_word or '&nbsp'
+      -last_word = ''
+      -@game.turns.each do |turn|
+        -last_word = last_word + turn.letter if turn.position == Turn::FINISH
+        -last_word = turn.letter + last_word if turn.position == Turn::START
+        #{last_word}
+        %br
     .append_letter
       =text_field_tag("append_letter", "", maxlength: 1, disabled: !current_users_turn)
   .buttons
@@ -28,3 +33,4 @@
       =f.input :position
   =hidden_field_tag("selected_letter", " ", :id => 'selected_letter')
   =hidden_field_tag("position", "S", :id => 'position')
+  =hidden_field_tag("last_word", @game.current_word, :id => 'last_word')

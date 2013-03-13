@@ -1,11 +1,12 @@
 class GameObserver < ActiveRecord::Observer
   def after_turn_played(game, transition)
-    player = game.player_one_turn? ? game.player_one : game.player_two
-    GameMailer.your_turn(game, player).deliver if player
+    unless game.over?
+      player = game.player_one_turn? ? game.player_one : game.player_two
+      GameMailer.your_turn(game, player).deliver if player
+    end
   end
 
   def after_transition(game, transition)
-    puts "      !!!!!!!!!!         in after_transition"
     if game.over?
       winner = game.player_one_won? ? game.player_one : game.player_two
       loser = game.opponent(winner)

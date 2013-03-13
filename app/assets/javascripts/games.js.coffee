@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
-page_vars = {}
+game_page_vars = {}
 
 spinner_opts =
   lines: 15 # The number of lines to draw
@@ -23,11 +23,16 @@ spinner_opts =
 
 showSpinner = ()->
   target = $(".played_letters")[0]
-  page_vars['spinner'] = new Spinner(spinner_opts) unless page_vars['spinner']
-  page_vars['spinner'].spin(target)
+  game_page_vars['spinner'] = new Spinner(spinner_opts) unless game_page_vars['spinner']
+  game_page_vars['spinner'].spin(target)
 
 hideSpinner = ()->
-  page_vars['spinner'].stop()
+  game_page_vars['spinner'].stop()
+
+updateGame = (data)->
+  unless $("#last_word")[0].value is data['current_word']
+    $(".played_letters").append(data['current_word']+"<br/>")
+    $("#last_word")[0].value = data['current_word']
 
 $ ->
   $(".pyramid input").keypress (event)->
@@ -44,6 +49,8 @@ $ ->
 
   $("#submit_turn").click (event)->
     $(this).attr('disabled','disabled')
+    $(".prepend_letter input").attr('disabled', 'disabled')[0].value = ""
+    $(".append_letter input").attr('disabled', 'disabled')[0].value = ""
     $("#prompt").html("")
     showSpinner()
     turn_form = $("#turn_form > form")
@@ -53,14 +60,6 @@ $ ->
       letter: $("#turn_letter")[0].value
       position: $("#turn_position")[0].value
     ).done((data)->
-      alert("Turn played.")
-#      alert(data.toString())
-#      alert(data[1])
-#      alert(data[2])
-#      alert(data['current_letter'])
       hideSpinner()
-      $("#prompt").html("Refresh your browser to check for your turn...")
-      $(".prepend_letter input").attr('disabled', 'disabled')[0].value = ""
-      $(".append_letter input").attr('disabled', 'disabled')[0].value = ""
-
+      updateGame(data)
     )
