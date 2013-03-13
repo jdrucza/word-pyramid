@@ -1,6 +1,15 @@
-%p
-  Hey #{@player.name}, you WON!!!!.
-%p
-  Click #{link_to 'here', @game} to view the game.
-%p
-  Click #{link_to 'Play again', @game} to start a new game.
+!!!
+%html
+  %head
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+      %title= "Word Pyramid"
+      %meta{:content => "Word Pyramid", :name => "description"}
+        = stylesheet_link_tag "application", :media => "all"
+        = javascript_include_tag "application"
+  %body
+    %p
+      Hey #{@player.name}, you WON!!!!.
+    %p
+      Click #{link_to 'here', game_url(@game, only_path: false)} to view the game.
+    %p
+      Click #{link_to 'Play again', home_url(only_path: false)} to start a new game.

@@ -1,4 +1,3 @@
-%p
-  Hey #{@player.name}, it's your turn.
-%p
-  Click #{link_to 'here', @game} to view the game.
+Hey #{@player.name}, it's your turn.
+
+Click here: #{game_url(@game, only_path: false)} to view the game.

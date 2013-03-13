@@ -8,6 +8,7 @@ WordPyramid::Application.routes.draw do
     end
   end
 
+  match '/' => 'home#index', :as => 'home'
 
   authenticated :user do
     root :to => 'home#index'

@@ -54,7 +54,7 @@ $ ->
       position: $("#turn_position")[0].value
     ).done((data)->
       alert("Turn played.")
-      alert($(data).serialize)
+#      alert(data.toString())
 #      alert(data[1])
 #      alert(data[2])
 #      alert(data['current_letter'])

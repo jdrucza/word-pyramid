@@ -20,6 +20,7 @@
   .played_letters {
     display: inline-block;
     width: 200px;
+    min-height: 40px;
     max-height: 260px;
     overflow: scroll;
   }
