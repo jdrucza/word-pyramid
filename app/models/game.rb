@@ -39,21 +39,21 @@ class Game < ActiveRecord::Base
     event :challenge_responded do
       transition :challenge_player_one => :player_one_won, :if => lambda{|game| game.challenge_response_word_valid?}
       transition :challenge_player_two => :player_two_won, :if => lambda{|game| game.challenge_response_word_valid?}
-      transition :player_one_turn => :player_two_won
-      transition :player_two_turn => :player_one_won
+      transition :challenge_player_one => :player_two_won
+      transition :challenge_player_two => :player_one_won
     end
   end
 
   def word_valid?(word)
-    word.length > 4 and Word.exists?(current_word)
+    word.length > 4 and Word.exists?(word)
   end
 
   def current_word_valid?
     word_valid?(current_word)
   end
 
-  def challenge_response_word_valid
-    word_valid(challenge_response)
+  def challenge_response_word_valid?
+    challenge_response.match(current_word) and word_valid?(challenge_response)
   end
 
   def player_for_user(user)
@@ -105,6 +105,20 @@ class Game < ActiveRecord::Base
     if players_turn?(player)
       challenge_made
       save!
+    else
+      errors[:base] << "Not your turn."
+      false
+    end
+  end
+
+  def respond_to_challenge(response, player)
+    if challenged?(player)
+      self.challenge_response = response
+      challenge_responded
+      save!
+    else
+      errors[:base] << "You haven't been challenged."
+      false
     end
   end
 
@@ -132,7 +146,7 @@ class Game < ActiveRecord::Base
 
   def self.join_new(user)
     # Check if game without second player exists else create new
-    available_game = self.waiting_for_player_two.not_being_played_by(user).readonly(false).first
+    available_game = self.waiting_for_player_two.not_being_played_by(user).first
     player = Player.create!(:user_id => user.id)
     unless available_game
       available_game = Game.new
@@ -164,7 +178,7 @@ class Game < ActiveRecord::Base
   end
 
   scope :waiting_for_player_two, where(:player_two_id => nil)
-  scope :not_being_played_by, lambda{|user| joins(:players).where("players.user_id != ? and state not in ('player_two_won','player_one_won')", user.id)}
-  scope :being_played_by, lambda{|user| joins(:players).where("players.user_id = ? and state not in ('player_two_won','player_one_won')", user.id)}
-  scope :played_by, lambda{|user| joins(:players).where('players.user_id = ?', user.id)} #TODO add state equal to complete, maybe....
+  scope :not_being_played_by, lambda{|user| joins(:players).where("players.user_id != ? and state not in ('player_two_won','player_one_won')", user.id).readonly(false)}
+  scope :being_played_by, lambda{|user| joins(:players).where("players.user_id = ? and state not in ('player_two_won','player_one_won')", user.id).readonly(false)}
+  scope :played_by, lambda{|user| joins(:players).where('players.user_id = ?', user.id).readonly(false)} #TODO add state equal to complete, maybe....
 end

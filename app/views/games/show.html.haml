@@ -32,11 +32,14 @@
   .buttons
     =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn', disabled: !current_users_turn
     =submit_tag "Challenge", :class => 'btn btn-primary', :id => 'submit_challenge', disabled: !current_users_turn
-  #turn_form
-    =simple_form_for [@game,@turn], remote: true do |f|
-      =f.input :letter
-      =f.input :position
+  #challenge{class: ("hidden" unless @game.challenged?(current_user))}
+    %br
+    =text_field_tag("challenge_response", @game.current_word, maxlength: 28)
+    %br
+    =submit_tag "Respond to Challenge", :class => 'btn btn-primary', :id => 'submit_challenge_response'
+
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
   =hidden_field_tag("game_challenge_url", challenge_game_path(@game), :id => 'game_challenge_url')
+  =hidden_field_tag("game_respond_to_challenge_url", respond_to_challenge_game_path(@game), :id => 'game_respond_to_challenge_url')
   =hidden_field_tag("auth_token", form_authenticity_token, :id => 'auth_token')
   =hidden_field_tag("last_word", @game.current_word, :id => 'last_word')

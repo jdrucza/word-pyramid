@@ -86,6 +86,45 @@ describe Game do
       game.current_word.should == "M"
       game.turns.length.should eq(1)
     end
+  end
 
+  describe "challenge_response_word_valid?" do
+    it "should be true" do
+      game = Game.make!
+      game.current_word = "ARREN"
+      game.challenge_response = "WARREN"
+      game.challenge_response_word_valid?.should be_true
+    end
+    it "should be false" do
+      game = Game.make!
+      game.current_word = "ARREN"
+      game.challenge_response = "ZZZARREN"
+      game.challenge_response_word_valid?.should be_false
+      game.current_word = "ARREN"
+      game.challenge_response = "CORRECT"
+      game.challenge_response_word_valid?.should be_false
+    end
+  end
+
+  describe "respond_to_challenge" do
+    it "should transition to player_one_won when player_two fails challenge" do
+      game = Game.make!
+      game.player_two = Player.make!
+      game.current_word = "ARREN"
+      game.challenge_made
+      game.challenge_player_two?.should be_true
+      game.respond_to_challenge("XXXXARREN",game.player_two.user)
+      game.player_one_won?.should be_true
+    end
+
+    it "should transition to player_two_won when player_two passes challenge" do
+      game = Game.make!
+      game.player_two = Player.make!
+      game.current_word = "ARREN"
+      game.challenge_made
+      game.challenge_player_two?.should be_true
+      game.respond_to_challenge("WARREN",game.player_two.user)
+      game.player_two_won?.should be_true
+    end
   end
 end

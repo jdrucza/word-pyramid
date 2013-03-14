@@ -37,6 +37,7 @@ updateGame = (data)->
 $ ->
   game_page_vars.turn_form_url = $("#turn_form_url")[0].value
   game_page_vars.game_challenge_url = $("#game_challenge_url")[0].value
+  game_page_vars.game_respond_to_challenge_url = $("#game_respond_to_challenge_url")[0].value
   game_page_vars.auth_token = $("#auth_token")[0].value
   game_page_vars.last_word = $("#last_word")[0].value
 
@@ -51,17 +52,6 @@ $ ->
 
   $(".append_letter input").keypress (event)->
     game_page_vars.turn_position = "E"
-
-  $("#submit_challenge").click (event)->
-    $("#prompt").html("Issuing challenge...")
-    showSpinner()
-    $.post(game_page_vars.game_challenge_url+'.json',
-      auth_token: game_page_vars.auth_token
-    ).done((data)->
-      hideSpinner()
-      $("#prompt").html("Challenge issued. Refresh your browser to check for challenge response...")
-      updateGame(data)
-    )
 
   $("#submit_turn").click (event)->
     $(this).attr('disabled','disabled')
@@ -79,3 +69,29 @@ $ ->
       $("#prompt").html("Refresh your browser to check for your turn...")
       updateGame(data)
     )
+
+  $("#submit_challenge").click (event)->
+    $("#prompt").html("Issuing challenge...")
+    showSpinner()
+    $.post(game_page_vars.game_challenge_url+'.json',
+      auth_token: game_page_vars.auth_token
+    ).done((data)->
+      hideSpinner()
+      $("#prompt").html("Challenge issued. Refresh your browser to check for challenge response...")
+      updateGame(data)
+    )
+
+  $("#submit_challenge_response").click (event)->
+    $("#prompt").html("Checking Challenge response...")
+    showSpinner()
+    $.post(game_page_vars.game_respond_to_challenge_url+'.json',
+      auth_token: game_page_vars.auth_token
+      challenge_response: $("#challenge_response")[0].value
+    ).done((data)->
+      hideSpinner()
+      $("#prompt").html("Refresh your browser to check for challenge results...")
+      updateGame(data)
+    )
+
+  $("#challenge_response").keyup (event)->
+    @value = @value.toUpperCase()

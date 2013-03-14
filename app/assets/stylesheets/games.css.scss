@@ -17,6 +17,15 @@
   .disabled {
     @include opacity(0);
   }
+  .hidden {
+    display: none;
+  }
+  #challenge {
+    padding: 3px;
+    input {
+      text-align: center;
+    }
+  }
   .played_letters {
     display: inline-block;
     width: 200px;
