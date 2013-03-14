@@ -37,6 +37,8 @@
     =text_field_tag("challenge_response", @game.current_word, maxlength: 28)
     %br
     =submit_tag "Respond to Challenge", :class => 'btn btn-primary', :id => 'submit_challenge_response'
+  #challenge_response
+    ="Challenge Response: #{@game.challenge_response}" if @game.challenge_response
 
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
   =hidden_field_tag("game_challenge_url", challenge_game_path(@game), :id => 'game_challenge_url')
