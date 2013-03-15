@@ -113,6 +113,8 @@ describe Game do
       game.current_word = "ARREN"
       game.challenge_made
       game.challenge_player_two?.should be_true
+      GameMailer.stub_chain(:you_won, :deliver).and_return(true)
+      GameMailer.stub_chain(:you_lost, :deliver).and_return(true)
       game.respond_to_challenge("XXXXARREN",game.player_two.user)
       game.player_one_won?.should be_true
     end
@@ -123,8 +125,74 @@ describe Game do
       game.current_word = "ARREN"
       game.challenge_made
       game.challenge_player_two?.should be_true
+      GameMailer.stub_chain(:you_won, :deliver).and_return(true)
+      GameMailer.stub_chain(:you_lost, :deliver).and_return(true)
       game.respond_to_challenge("WARREN",game.player_two.user)
       game.player_two_won?.should be_true
+    end
+  end
+
+  describe "challenge_possible?" do
+    it "should be true" do
+      game = Game.make!
+      game.play_turn(Turn.make!,game.player_one.user).should == true
+      game.player_two = Player.make!
+      game.challenge_possible?(game.player_two).should be_true
+    end
+  end
+
+  describe "challenged? and challenger?" do
+    let(:game) {
+      game = Game.make!
+      game.player_two = Player.make!
+      game.play_turn(Turn.make!(letter:"e"),game.player_one.user).should == true
+      game.play_turn(Turn.make!(letter:"n"),game.player_two.user).should == true
+      game.play_turn(Turn.make!(letter:"a"),game.player_one.user).should == true
+      game.play_turn(Turn.make!(letter:"s"),game.player_two.user).should == true
+      game
+    }
+
+    it "should be correct before challenged player responds" do
+      game.challenge(game.player_one)
+      game.challenged?(game.player_two).should be_true
+      game.challenged?(game.player_one).should be_false
+      game.challenger?(game.player_two).should be_false
+      game.challenger?(game.player_one).should be_true
+    end
+
+    it "should be correct after challenged player responds correctly" do
+      game.challenge(game.player_one)
+      game.respond_to_challenge("insane", game.player_two)
+      game.challenged?(game.player_two).should be_true
+      game.challenged?(game.player_one).should be_false
+      game.challenger?(game.player_two).should be_false
+      game.challenger?(game.player_one).should be_true
+    end
+
+    it "should be correct after challenged player responds incorrectly" do
+      game.challenge(game.player_one)
+      game.respond_to_challenge("xxsanezz", game.player_two)
+      game.challenged?(game.player_two).should be_true
+      game.challenged?(game.player_one).should be_false
+      game.challenger?(game.player_two).should be_false
+      game.challenger?(game.player_one).should be_true
+    end
+
+    it "should be false when no challenge has been made" do
+      game.challenged?(game.player_two).should be_false
+      game.challenged?(game.player_one).should be_false
+      game.challenger?(game.player_two).should be_false
+      game.challenger?(game.player_one).should be_false
+    end
+
+    it "should be false when no challenge has been made and game has ended" do
+      game.play_turn(Turn.make!(letter:"n"),game.player_one.user).should == true
+      game.play_turn(Turn.make!(letter:"i"),game.player_two.user).should == true
+      game.over?.should be_true
+      game.challenged?(game.player_two).should be_false
+      game.challenged?(game.player_one).should be_false
+      game.challenger?(game.player_two).should be_false
+      game.challenger?(game.player_one).should be_false
     end
   end
 end

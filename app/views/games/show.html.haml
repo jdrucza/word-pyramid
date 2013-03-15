@@ -31,14 +31,17 @@
       =text_field_tag("append_letter", "", maxlength: 1, disabled: !current_users_turn)
   .buttons
     =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn', disabled: !current_users_turn
-    =submit_tag "Challenge", :class => 'btn btn-primary', :id => 'submit_challenge', disabled: !current_users_turn
-  #challenge{class: ("hidden" unless @game.challenged?(current_user))}
+    =submit_tag "Challenge", :class => 'btn btn-primary', :id => 'submit_challenge', disabled: (!current_users_turn or !@game.challenge_possible?(current_user))
+  #challenge{class: ("hidden" unless !@game.over? and @game.challenged?(current_user))}
     %br
     =text_field_tag("challenge_response", @game.current_word, maxlength: 28)
     %br
     =submit_tag "Respond to Challenge", :class => 'btn btn-primary', :id => 'submit_challenge_response'
   #challenge_response
     ="Challenge Response: #{@game.challenge_response}" if @game.challenge_response
+  #play_again{class: ("hidden" unless @game.over?)}
+    = simple_form_for(Game.new) do |f|
+      = f.button :submit, "Play Again", :class => 'btn-primary'
 
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
   =hidden_field_tag("game_challenge_url", challenge_game_path(@game), :id => 'game_challenge_url')

@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+      %title= "Word Pyramids"
+      %meta{:content => "Word Pyramids", :name => "description"}
+        = stylesheet_link_tag "application", :media => "all"
+        = javascript_include_tag "application"
+  %body
+    %p
+      Hey #{@player.name}, you've been CHALLENGED!!!
+    %p
+      I hope you didn't make that last letter up...
+    %p
+      Click #{link_to 'here', game_url(@game, only_path: false)} to respond to the challenge.

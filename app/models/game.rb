@@ -88,21 +88,26 @@ class Game < ActiveRecord::Base
     player = ensure_player(player)
     turn.player = player
     if players_turn?(player)
-      turns << turn
-      turn.save!
-      self.current_word = turn.letter + self.current_word if turn.position == Turn::START
-      self.current_word = self.current_word + turn.letter if turn.position == Turn::FINISH
-      turn_played
-      save!
+      transaction do
+        turns << turn
+        self.current_word = turn.letter + self.current_word if turn.position == Turn::START
+        self.current_word = self.current_word + turn.letter if turn.position == Turn::FINISH
+        turn_played
+        save!
+      end
     else
       turn.errors[:base] << "Not your turn"
       false
     end
   end
 
-  def challenge(player)
+  def challenge_possible?(player)
     player = ensure_player(player)
-    if players_turn?(player)
+    current_word.length > 0 and players_turn?(player)
+  end
+
+  def challenge(player)
+    if challenge_possible?(player)
       challenge_made
       save!
     else
@@ -132,12 +137,16 @@ class Game < ActiveRecord::Base
 
   def challenged?(player)
     player = ensure_player(player)
-    ((challenge_player_one? and (player == player_one)) or (challenge_player_two? and (player == player_two)))
+    ((challenge_player_one? and (player == player_one)) or
+        (challenge_player_two? and (player == player_two))) or
+        (over? and challenge_response and (turns.last.player == player))
   end
 
   def challenger?(player)
     player = ensure_player(player)
-    ((challenge_player_one? and (player == player_two)) or (challenge_player_two? and (player == player_one)))
+    ((challenge_player_one? and (player == player_two)) or
+        (challenge_player_two? and (player == player_one))) or
+        (over? and challenge_response and turns.last.player == opponent(player))
   end
 
   def current_word

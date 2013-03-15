@@ -55,6 +55,7 @@ $ ->
 
   $("#submit_turn").click (event)->
     $(this).attr('disabled','disabled')
+    $("#submit_challenge").attr('disabled', 'disabled')
     $(".prepend_letter input").attr('disabled', 'disabled')[0].value = ""
     $(".append_letter input").attr('disabled', 'disabled')[0].value = ""
     $("#prompt").html("Validating your entry...")

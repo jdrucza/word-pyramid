@@ -6,6 +6,11 @@ class GameObserver < ActiveRecord::Observer
     end
   end
 
+  def after_challenge_made(game, transition)
+    challenged_player = game.challenged?(game.player_one) ? game.player_one : game.player_two
+    GameMailer.youve_been_challenged(game, challenged_player).deliver
+  end
+
   def after_transition(game, transition)
     if game.over?
       winner = game.player_one_won? ? game.player_one : game.player_two

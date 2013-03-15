@@ -10,6 +10,9 @@
     %p
       Hey #{@player.name}, you LOST....
     %p
+      = "#{@game.opponent(@player).name} played #{@game.challenge_response} to win your challenge." if @game.challenger?(@player)
+      = "You lost the challenge with #{@game.challenge_response}." if @game.challenged?(@player)
+    %p
       Click #{link_to 'here', game_url(@game, only_path: false)} to view the game.
     %p
       Click #{link_to 'Play again', home_url(only_path: false)} to start a new game.
