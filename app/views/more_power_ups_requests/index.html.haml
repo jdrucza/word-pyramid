@@ -1,21 +1,16 @@
-%h1 Listing more_power_ups_requests
+#more_power_ups_requests
+  %h1 Pending Power Up Requests
 
-%table
-  %tr
-    %th User
-    %th Granted
-    %th
-    %th
-    %th
-
-  - @more_power_ups_requests.each do |more_power_ups_request|
+  %table
     %tr
-      %td= more_power_ups_request.user_id
-      %td= more_power_ups_request.granted
-      %td= link_to 'Show', more_power_ups_request
-      %td= link_to 'Edit', edit_more_power_ups_request_path(more_power_ups_request)
-      %td= link_to 'Destroy', more_power_ups_request, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %th User
+      %th
+      %th
+      %th
 
-%br
-
-= link_to 'New More power ups request', new_more_power_ups_request_path
+    - @more_power_ups_requests.each do |more_power_ups_request|
+      %tr
+        %td= more_power_ups_request.user.name
+        %td= mail_to more_power_ups_request.user.email, 'Email User'
+        %td= link_to 'Grant', grant_more_power_ups_request_path(more_power_ups_request)
+        %td= link_to 'Cancel', more_power_ups_request, :method => :delete, :data => { :confirm => 'Are you sure?' }

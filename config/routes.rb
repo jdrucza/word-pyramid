@@ -1,6 +1,9 @@
 WordPyramid::Application.routes.draw do
-  resources :more_power_ups_requests
-
+  resources :more_power_ups_requests do
+    member do
+      get :grant
+    end
+  end
 
   resources :players
   resources :games do

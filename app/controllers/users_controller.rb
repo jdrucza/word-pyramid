@@ -22,7 +22,7 @@ class UsersController < ApplicationController
       redirect_to home_path
     else
       @user = User.find(params[:id])
-      3.times{ PowerUp.create!(user_id: @user.id)}
+      PowerUp.grant_three(@user)
       render :show
     end
   end

@@ -10,8 +10,9 @@ class MorePowerUpsRequestsController < ApplicationController
   end
   # GET /more_power_ups_requests
   # GET /more_power_ups_requests.json
+
   def index
-    @more_power_ups_requests = MorePowerUpsRequest.all
+    @more_power_ups_requests = MorePowerUpsRequest.pending
 
     respond_to do |format|
       format.html # index.html.erb
@@ -26,6 +27,17 @@ class MorePowerUpsRequestsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
+      format.json { render json: @more_power_ups_request }
+    end
+  end
+
+  def grant
+    @more_power_ups_request = MorePowerUpsRequest.find(params[:id])
+
+    PowerUp.grant_three(@more_power_ups_request.user, @more_power_ups_request)
+
+    respond_to do |format|
+      format.html { redirect_to more_power_ups_requests_path}
       format.json { render json: @more_power_ups_request }
     end
   end

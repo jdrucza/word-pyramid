@@ -1,3 +1,14 @@
 // Place all the styles related to the MorePowerUpsRequests controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+#more_power_ups_requests {
+  table {
+    //border-collapse: separate;
+    //border-spacing: 2px;
+    border: 1px #808080 solid;
+    td {
+      border: 1px #808080 solid;
+      padding: 3px 10px 3px 10px;
+    }
+  }
+}

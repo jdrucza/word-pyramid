@@ -7,4 +7,13 @@ class PowerUp < ActiveRecord::Base
   def result_data
     read_attribute :result_data or ""
   end
+
+  def self.grant_three(user, pending_request)
+    3.times{ PowerUp.create!(user_id: user.id)}
+    pending_request = pending_request or MorePowerUpsRequest.pending.where(user_id: user.id)
+    if pending_request
+      pending_request.granted = true
+      pending_request.save!
+    end
+  end
 end
