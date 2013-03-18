@@ -36,7 +36,7 @@
     =submit_tag "Use Power Up", :class => 'btn btn-warning', :id => 'submit_use_power_up', disabled: (not @game.power_up_possible?(current_user))
     %br
     -if @game.used_power_up?(current_user)
-      Power Up Word Suggestion: #{@game.used_power_up(current_user).result_data}
+      Power Up Word Suggestion: #{@game.used_power_up(current_user).result_data.upcase}
 
   #challenge{class: ("hidden" unless !@game.over? and @game.challenged?(current_user))}
     %br
