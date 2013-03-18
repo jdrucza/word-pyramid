@@ -34,4 +34,10 @@ class GameMailer < ActionMailer::Base
     @player = player
     mail to: player.email
   end
+
+  def power_ups_requested(user)
+    @user = user
+    #mail to: ['andrewfitz@gmail.com', 'james@nativetongue.com']
+    mail to: ['james@nativetongue.com']
+  end
 end

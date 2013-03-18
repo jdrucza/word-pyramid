@@ -15,9 +15,4 @@
       %td= game.player_one.name
       %td= game.player_two ? game.player_two.name : "Pending"
       %td= link_to 'Show', game
-      %td= link_to 'Edit', edit_game_path(game)
-      %td= link_to 'Destroy', game, :method => :delete, :data => { :confirm => 'Are you sure?' }
-
-%br
-
-= link_to 'New Game', new_game_path
+      %td= link_to 'Destroy', game, :method => :delete, :data => { :confirm => 'Are you sure?' } if current_user.admin?

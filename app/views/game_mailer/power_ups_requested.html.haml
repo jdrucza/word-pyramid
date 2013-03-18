@@ -1,0 +1,13 @@
+!!!
+%html
+  %head
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}
+      %title= "Word Pyramids"
+      %meta{:content => "Word Pyramids", :name => "description"}
+        = stylesheet_link_tag "application", :media => "all"
+        = javascript_include_tag "application"
+  %body
+    %p
+      More power ups requested by #{@user.name}
+    %p
+      Click #{link_to 'here', more_power_ups_requests_url(only_path: false)} to view pending requests.

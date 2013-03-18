@@ -14,7 +14,6 @@ class GamesController < ApplicationController
   # GET /games/1.json
   def show
     @game = Game.find(params[:id])
-    @turn = Turn.new
 
     respond_to do |format|
       format.html # show.html.erb
@@ -123,12 +122,16 @@ class GamesController < ApplicationController
   # DELETE /games/1
   # DELETE /games/1.json
   def destroy
-    @game = Game.find(params[:id])
-    @game.destroy
+    unless current_user.admin?
+      redirect_to home_path
+    else
+      @game = Game.find(params[:id])
+      @game.destroy
 
-    respond_to do |format|
-      format.html { redirect_to games_url }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to games_url }
+        format.json { head :no_content }
+      end
     end
   end
 end

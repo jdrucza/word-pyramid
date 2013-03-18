@@ -30,3 +30,7 @@ end
 PowerUp.blueprint do
   # Attributes here
 end
+
+MorePowerUpsRequest.blueprint do
+  # Attributes here
+end

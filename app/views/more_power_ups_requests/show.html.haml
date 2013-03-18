@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b User:
+  = @more_power_ups_request.user_id
+%p
+  %b Granted:
+  = @more_power_ups_request.granted
+
+= link_to 'Edit', edit_more_power_ups_request_path(@more_power_ups_request)
+\|
+= link_to 'Back', more_power_ups_requests_path

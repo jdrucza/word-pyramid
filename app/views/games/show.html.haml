@@ -33,10 +33,15 @@
     =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn', disabled: !current_users_turn
     =submit_tag "Challenge", :class => 'btn btn-primary', :id => 'submit_challenge', disabled: (!current_users_turn or !@game.challenge_possible?(current_user))
     %br
-    =submit_tag "Use Power Up", :class => 'btn btn-warning', :id => 'submit_use_power_up', disabled: (not @game.power_up_possible?(current_user))
-    %br
-    -if @game.used_power_up?(current_user)
+    -if @game.power_up_possible?(current_user)
+      =submit_tag "Use Power Up", :class => 'btn btn-warning', :id => 'submit_use_power_up'
+      %br
+        Number of power ups remaining: #{current_user.power_ups.unused.count}
+    -elsif @game.used_power_up?(current_user)
       Power Up Word Suggestion: #{@game.used_power_up(current_user).result_data.upcase}
+    -elsif current_user.power_ups.unused.count <= 0
+      = simple_form_for MorePowerUpsRequest.new do |f|
+        = f.submit "Request More Power Ups", class: "btn btn-success"
 
   #challenge{class: ("hidden" unless !@game.over? and @game.challenged?(current_user))}
     %br

@@ -3,4 +3,8 @@ class PowerUp < ActiveRecord::Base
 
   scope :unused, where(:used_in_game_id => nil)
   scope :used_in, lambda{|game| where(:used_in_game_id => game.id)}
+
+  def result_data
+    read_attribute :result_data or ""
+  end
 end

@@ -19,7 +19,7 @@ class Player < ActiveRecord::Base
 
   def use_power_up(word)
     power_up = power_ups.unused.first
-    power_up.result_data = word
+    power_up.result_data = word or "No word can be made from #{game.current_word}"
     power_up.used_in_game_id = game_id
     power_up.save!
   end

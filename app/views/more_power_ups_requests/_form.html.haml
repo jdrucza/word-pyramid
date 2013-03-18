@@ -1,0 +1,9 @@
+= simple_form_for(@more_power_ups_request) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :user_id
+    = f.input :granted
+
+  .form-actions
+    = f.button :submit
