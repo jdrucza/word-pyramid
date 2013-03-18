@@ -16,5 +16,9 @@ WordPyramid::Application.routes.draw do
   end
   root :to => "home#index"
   devise_for :users
-  resources :users
+  resources :users do
+    member do
+      put :add_power_ups
+    end
+  end
 end

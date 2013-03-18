@@ -3,3 +3,8 @@
   User: #{@user.name}
 %p
   Email: #{@user.email if @user.email}
+%p
+  Unused Power Ups: #{@user.power_ups.unused.count}
+%p
+  = simple_form_for @user, url: add_power_ups_user_url do |f|
+    = f.submit 'Add 3 Power Ups', class:'btn btn-danger'

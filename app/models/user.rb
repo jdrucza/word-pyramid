@@ -7,4 +7,10 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me
+
+  has_many :power_ups
+
+  def admin?
+    ["james@nativetongue.com", "matthew@nativetonge.com", "andrewhfitz@gmail.com"].include?(email)
+  end
 end
