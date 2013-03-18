@@ -5,6 +5,7 @@ WordPyramid::Application.routes.draw do
     member do
       post :challenge
       post :respond_to_challenge
+      post :use_power_up
     end
   end
 

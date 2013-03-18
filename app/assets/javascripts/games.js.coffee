@@ -38,6 +38,7 @@ $ ->
   game_page_vars.turn_form_url = $("#turn_form_url")[0].value
   game_page_vars.game_challenge_url = $("#game_challenge_url")[0].value
   game_page_vars.game_respond_to_challenge_url = $("#game_respond_to_challenge_url")[0].value
+  game_page_vars.game_use_power_up_url = $("#game_use_power_up_url")[0].value
   game_page_vars.auth_token = $("#auth_token")[0].value
   game_page_vars.last_word = $("#last_word")[0].value
 
@@ -91,6 +92,17 @@ $ ->
     ).done((data)->
       hideSpinner()
       $("#prompt").html("Refresh your browser to check for challenge results...")
+      updateGame(data)
+    )
+
+  $("#submit_use_power_up").click (event)->
+    $("#prompt").html("Searching for a suitable word...")
+    showSpinner()
+    $.post(game_page_vars.game_use_power_up_url+'.json',
+      auth_token: game_page_vars.auth_token
+    ).done((data)->
+      hideSpinner()
+      $("#prompt").html("Refresh your browser to check for your word suggestion...")
       updateGame(data)
     )
 

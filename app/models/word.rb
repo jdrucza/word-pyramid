@@ -22,6 +22,17 @@ class Word
     @@words.select{|word,l| word.match(letters)}
   end
 
+  def self.containing_and_longer_than(letters, length)
+    letters = letters.downcase
+    @@words.select{|word,l| l > length and word.match(letters)}
+  end
+
+  def self.containing_s1_or_s2_excluding(s1, s2, excluded)
+    excluded = excluded.downcase
+    length = ((s1 ? s1.length : false) or (s2 ? s2.length : false) or 29)
+    @@words.select{|word,l| l > length and word != excluded and ((s1 and word.match(s1)) or (s2 and word.match(s2)))}
+  end
+
   def self.words()
     @@words
   end

@@ -101,11 +101,6 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def challenge_possible?(player)
-    player = ensure_player(player)
-    current_word.length > 0 and players_turn?(player)
-  end
-
   def challenge(player)
     if challenge_possible?(player)
       challenge_made
@@ -127,12 +122,44 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def use_power_up(player)
+    player = ensure_player(player)
+    if power_up_possible?(player)
+      suggested_word = word_suggestion
+      puts "    !!!!!!      SUGGESTED word is #{suggested_word}"
+      player.use_power_up(suggested_word)
+    else
+      errors[:base] << "Not your turn or no Power Ups available."
+      false
+    end
+  end
+
+  def power_up_possible?(player)
+    player = ensure_player(player)
+    players_turn?(player) and player.has_available_power_up? and not player.used_power_up?
+  end
+
+  def used_power_up?(user)
+    player = ensure_player(user)
+    player.used_power_up?
+  end
+
+  def used_power_up(user)
+    player = ensure_player(user)
+    player.used_power_up
+  end
+
   def players_turn?(player)
     player and ((player_one_turn? and player == player_one) or (player_two_turn? and player == player_two))
   end
 
   def users_turn?(user)
     players_turn?(player_for_user(user))
+  end
+
+  def challenge_possible?(player)
+    player = ensure_player(player)
+    current_word.length > 0 and players_turn?(player)
   end
 
   def challenged?(player)
@@ -147,6 +174,40 @@ class Game < ActiveRecord::Base
     ((challenge_player_one? and (player == player_two)) or
         (challenge_player_two? and (player == player_one))) or
         (over? and challenge_response and turns.last.player == opponent(player))
+  end
+
+  def word_suggestion
+    candidates = Word.containing_and_longer_than(current_word, current_word.length+1)
+    odd_or_even = current_word.length % 2
+    game_word = current_word.downcase
+
+    longest = 0
+    by_length = {}
+    candidates.each_pair{|w,l|
+      longest = l if l > longest
+      by_length[l] ||= []
+      by_length[l] << w
+    }
+
+    found_word = nil
+
+    by_length.sort.reverse.each{|l,word_list|
+      unless l % 2 == odd_or_even and !found_word
+        word_list.each{|word|
+          unless found_word
+            puts "  WORD:  #{word}    ||||    GAME_WORD:   #{game_word}"
+            char_after = word[word.index(game_word)+game_word.length]
+            char_before = word[word.index(game_word)-1]
+            s1 = (char_after ? game_word+char_after : nil)
+            s2 = (char_before ? char_before+game_word : nil)
+            if (s1 or s2) and Word.containing_s1_or_s2_excluding(s1, s2, word)
+              found_word = word
+            end
+          end
+        }
+      end
+    }
+    found_word
   end
 
   def current_word

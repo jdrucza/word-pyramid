@@ -90,6 +90,20 @@ class GamesController < ApplicationController
     end
   end
 
+  def use_power_up
+    @game = Game.find(params[:id])
+
+    respond_to do |format|
+      if @game.use_power_up(current_user)
+        format.html { redirect_to @game, notice: 'Power Up used.' }
+        format.json { render json: @game, status: :accepted, location: @game }
+      else
+        format.html { redirect_to home_url, :notice => "Challenge failed, please contact support." }
+        format.json { render json: @game.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   # PUT /games/1
   # PUT /games/1.json
   def update

@@ -195,4 +195,18 @@ describe Game do
       game.challenger?(game.player_one).should be_false
     end
   end
+
+  describe "word_suggestion" do
+    it "should suggest a word that " do
+      it "the player can win with " do
+
+      end
+      it "the player isn't guaranteed to win with" do
+
+      end
+      it "the player won't win with " do
+
+      end
+    end
+  end
 end

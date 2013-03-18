@@ -26,3 +26,7 @@ Turn.blueprint do
   letter {("A".ord + sn.to_i).chr}
   position {"S"}
 end
+
+PowerUp.blueprint do
+  # Attributes here
+end
