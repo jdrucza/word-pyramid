@@ -60,52 +60,53 @@
   #challenge_response
     ="Challenge Response: #{@game.challenge_response}" if @game.challenge_response
 
-  #play_again{class: ("hidden" unless @game.over?)}
-    = simple_form_for(Game.new) do |f|
-      = f.button :submit, "Play Again", :class => 'btn-primary'
-    #statistics
-      %h4 Statistics
-      %h5
-        = @game.player_one.name
-      %table
-        %tr
-          %th Played
-          %th Won
-          %th Lost
-          %th PUs used
-          %th PUs available
-        %tr
-          %td
-            = Game.played_by(@game.player_one.user).count
-          %td
-            = Game.won_by_count(@game.player_one.user)
-          %td
-            = Game.played_by(@game.player_one.user).count - Game.won_by_count(@game.player_one.user)
-          %td
-            = @game.player_one.user.power_ups.count - @game.player_one.user.power_ups.unused.count
-          %td
-            = @game.player_one.user.power_ups.unused.count
+  - if @game.over?
+    #play_again
+      = simple_form_for(Game.new) do |f|
+        = f.button :submit, "Play Again", :class => 'btn-primary'
+      #statistics
+        %h4 Statistics
+        %h5
+          = @game.player_one.name
+        %table
+          %tr
+            %th Played
+            %th Won
+            %th Lost
+            %th PUs used
+            %th PUs available
+          %tr
+            %td
+              = Game.played_by(@game.player_one.user).count
+            %td
+              = Game.won_by_count(@game.player_one.user)
+            %td
+              = Game.played_by(@game.player_one.user).count - Game.won_by_count(@game.player_one.user)
+            %td
+              = @game.player_one.user.power_ups.count - @game.player_one.user.power_ups.unused.count
+            %td
+              = @game.player_one.user.power_ups.unused.count
 
-      %h5
-        = @game.player_two.name
-      %table
-        %tr
-          %th Played
-          %th Won
-          %th Lost
-          %th PUs used
-          %th PUs available
-        %tr
-          %td
-            = Game.played_by(@game.player_two.user).count
-          %td
-            = Game.won_by_count(@game.player_two.user)
-          %td
-            = Game.played_by(@game.player_two.user).count - Game.won_by_count(@game.player_two.user)
-          %td
-            = @game.player_two.user.power_ups.count - @game.player_two.user.power_ups.unused.count
-          %td
-            = @game.player_two.user.power_ups.unused.count
+        %h5
+          = @game.player_two.name
+        %table
+          %tr
+            %th Played
+            %th Won
+            %th Lost
+            %th PUs used
+            %th PUs available
+          %tr
+            %td
+              = Game.played_by(@game.player_two.user).count
+            %td
+              = Game.won_by_count(@game.player_two.user)
+            %td
+              = Game.played_by(@game.player_two.user).count - Game.won_by_count(@game.player_two.user)
+            %td
+              = @game.player_two.user.power_ups.count - @game.player_two.user.power_ups.unused.count
+            %td
+              = @game.player_two.user.power_ups.unused.count
 
 
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
