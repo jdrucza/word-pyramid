@@ -1,0 +1,12 @@
+.users {
+  table {
+    width: 100%;
+    //border-collapse: separate;
+    //border-spacing: 2px;
+    border: 1px #808080 solid;
+    td, th {
+      border: 1px #808080 solid;
+      padding: 3px 10px 3px 10px;
+    }
+  }
+}

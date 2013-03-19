@@ -3,20 +3,23 @@
     #{@game.description}
   %p
     %b#prompt
-      - current_users_turn = @game.users_turn?(current_user)
-      - opponent = @game.opponent(current_user)
-      -if ((@game.player_one_won? and (@game.player_one.user == current_user)) or (@game.player_two_won? and (@game.player_two.user == current_user)))
-        You WON!!!
-      -elsif @game.over?
-        You LOST!!!
-      -elsif @game.challenged?(current_user)
-        You've been CHALLENGED!
-      -elsif @game.challenger?(current_user)
-        Waiting for challenge response from #{opponent.name}...
-      -elsif current_users_turn
-        Your turn!
-      -elsif opponent
-        #{opponent.name}'s turn...
+      -begin
+        - current_users_turn = @game.users_turn?(current_user)
+        - opponent = @game.opponent(current_user)
+        -if ((@game.player_one_won? and (@game.player_one.user == current_user)) or (@game.player_two_won? and (@game.player_two.user == current_user)))
+          You WON!!!
+        -elsif @game.over?
+          You LOST!!!
+        -elsif @game.challenged?(current_user)
+          You've been CHALLENGED!
+        -elsif @game.challenger?(current_user)
+          Waiting for challenge response from #{opponent.name}...
+        -elsif current_users_turn
+          Your turn!
+        -elsif opponent
+          #{opponent.name}'s turn...
+      -rescue Exception => e
+        -puts e #TODO remove terrible hack to allow viewing of game by non-player
   .pyramid
     .prepend_letter
       =text_field_tag("prepend_letter", "", maxlength: 1, disabled: !current_users_turn)
@@ -33,21 +36,26 @@
     =submit_tag "Submit turn", :class => 'btn btn-primary', :id => 'submit_turn', disabled: !current_users_turn
     =submit_tag "Challenge", :class => 'btn btn-primary', :id => 'submit_challenge', disabled: (!current_users_turn or !@game.challenge_possible?(current_user))
     %br
-    -if @game.power_up_possible?(current_user)
-      =submit_tag "Use Power Up", :class => 'btn btn-warning', :id => 'submit_use_power_up'
+    -begin
+      -if @game.power_up_possible?(current_user)
+        =submit_tag "Use Power Up", :class => 'btn btn-warning', :id => 'submit_use_power_up'
+        %br
+          Number of power ups remaining: #{current_user.power_ups.unused.count}
+      -elsif @game.used_power_up?(current_user)
+        Power Up Word Suggestion: #{@game.used_power_up(current_user).result_data.upcase}
+      -elsif current_user.power_ups.unused.count <= 0
+        = simple_form_for MorePowerUpsRequest.new do |f|
+          = f.submit "Request More Power Ups", class: "btn btn-success"
+    -rescue Exception => e
+      -puts e
+  -begin
+    #challenge{class: ("hidden" unless !@game.over? and @game.challenged?(current_user))}
       %br
-        Number of power ups remaining: #{current_user.power_ups.unused.count}
-    -elsif @game.used_power_up?(current_user)
-      Power Up Word Suggestion: #{@game.used_power_up(current_user).result_data.upcase}
-    -elsif current_user.power_ups.unused.count <= 0
-      = simple_form_for MorePowerUpsRequest.new do |f|
-        = f.submit "Request More Power Ups", class: "btn btn-success"
-
-  #challenge{class: ("hidden" unless !@game.over? and @game.challenged?(current_user))}
-    %br
-    =text_field_tag("challenge_response", @game.current_word, maxlength: 28)
-    %br
-    =submit_tag "Respond to Challenge", :class => 'btn btn-primary', :id => 'submit_challenge_response'
+      =text_field_tag("challenge_response", @game.current_word, maxlength: 28)
+      %br
+      =submit_tag "Respond to Challenge", :class => 'btn btn-primary', :id => 'submit_challenge_response'
+  -rescue Exception => e
+    -puts e
 
   #challenge_response
     ="Challenge Response: #{@game.challenge_response}" if @game.challenge_response
@@ -55,6 +63,50 @@
   #play_again{class: ("hidden" unless @game.over?)}
     = simple_form_for(Game.new) do |f|
       = f.button :submit, "Play Again", :class => 'btn-primary'
+    #statistics
+      %h4 Statistics
+      %h5
+        = @game.player_one.name
+      %table
+        %tr
+          %th Played
+          %th Won
+          %th Lost
+          %th PUs used
+          %th PUs available
+        %tr
+          %td
+            = Game.played_by(@game.player_one.user).count
+          %td
+            = Game.won_by_count(@game.player_one.user)
+          %td
+            = Game.played_by(@game.player_one.user).count - Game.won_by_count(@game.player_one.user)
+          %td
+            = @game.player_one.user.power_ups.count - @game.player_one.user.power_ups.unused.count
+          %td
+            = @game.player_one.user.power_ups.unused.count
+
+      %h5
+        = @game.player_two.name
+      %table
+        %tr
+          %th Played
+          %th Won
+          %th Lost
+          %th PUs used
+          %th PUs available
+        %tr
+          %td
+            = Game.played_by(@game.player_two.user).count
+          %td
+            = Game.won_by_count(@game.player_two.user)
+          %td
+            = Game.played_by(@game.player_two.user).count - Game.won_by_count(@game.player_two.user)
+          %td
+            = @game.player_two.user.power_ups.count - @game.player_two.user.power_ups.unused.count
+          %td
+            = @game.player_two.user.power_ups.unused.count
+
 
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
   =hidden_field_tag("game_challenge_url", challenge_game_path(@game), :id => 'game_challenge_url')

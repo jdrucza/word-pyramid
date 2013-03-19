@@ -250,5 +250,14 @@ class Game < ActiveRecord::Base
   scope :waiting_for_player_two, where(:player_two_id => nil)
   scope :not_being_played_by, lambda{|user| joins(:players).where("players.user_id != ? and state not in ('player_two_won','player_one_won')", user.id).readonly(false)}
   scope :being_played_by, lambda{|user| joins(:players).where("players.user_id = ? and state not in ('player_two_won','player_one_won')", user.id).readonly(false)}
-  scope :played_by, lambda{|user| joins(:players).where('players.user_id = ?', user.id).readonly(false)} #TODO add state equal to complete, maybe....
+  scope :played_by, lambda{|user| joins(:players).where("players.user_id = ? and state in ('player_two_won','player_one_won')", user.id).readonly(false)}
+  scope :won_by, lambda{|user|
+    find_by_sql(["select g.* from games g join players p1 on g.player_one_id = p1.id join players p2 on g.player_two_id = p2.id where g.state = 'player_one_won' and p1.user_id = ? or g.state = 'player_two_won' and p2.user_id = ?",
+                user.id, user.id])}
+  scope :won_by_as_player_one, lambda{|user| joins(:player_one).where(:state => 'player_one_won', :players => {:user_id => user})}
+  scope :won_by_as_player_two, lambda{|user| joins(:player_two).where(:state => 'player_two_won', :players => {:user_id => user})}
+
+  def self.won_by_count(user)
+    won_by_as_player_one(user).count + won_by_as_player_two(user).count
+  end
 end

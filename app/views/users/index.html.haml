@@ -1,7 +1,27 @@
-%h3 Users
-%ul.users
-  - @users.each do |user|
-    %li
-      = link_to user.name, user
-      signed up #{user.created_at.to_date}
-      = link_to "Delete", user, :method => :delete
+.users
+  %h3 Users
+  %table
+    %tr
+      %th Names
+      %th Joined
+      %th Played
+      %th Won
+      %th Lost
+      %th PUs used
+      %th PUs available
+    - @users.each do |user|
+      %tr
+        %td
+          = link_to user.name, user
+        %td
+          = user.created_at.to_date
+        %td
+          = Game.played_by(user).count
+        %td
+          = Game.won_by_count(user)
+        %td
+          = Game.played_by(user).count - Game.won_by_count(user)
+        %td
+          = user.power_ups.count - user.power_ups.unused.count
+        %td
+          = user.power_ups.unused.count
