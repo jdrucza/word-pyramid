@@ -192,10 +192,9 @@ class Game < ActiveRecord::Base
     found_word = nil
 
     by_length.sort.reverse.each{|l,word_list|
-      unless l % 2 == odd_or_even and !found_word
+      if ((l % 2) == odd_or_even) and !found_word
         word_list.each{|word|
           unless found_word
-            puts "  WORD:  #{word}    ||||    GAME_WORD:   #{game_word}"
             char_after = word[word.index(game_word)+game_word.length]
             char_before = word[word.index(game_word)-1]
             s1 = (char_after ? game_word+char_after : nil)
@@ -256,6 +255,7 @@ class Game < ActiveRecord::Base
                 user.id, user.id])}
   scope :won_by_as_player_one, lambda{|user| joins(:player_one).where(:state => 'player_one_won', :players => {:user_id => user})}
   scope :won_by_as_player_two, lambda{|user| joins(:player_two).where(:state => 'player_two_won', :players => {:user_id => user})}
+  scope :newest_first, order("created_at desc")
 
   def self.won_by_count(user)
     won_by_as_player_one(user).count + won_by_as_player_two(user).count
