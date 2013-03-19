@@ -16,6 +16,8 @@ WordPyramid::Application.routes.draw do
   end
 
   match '/' => 'home#index', :as => 'home'
+  match '/help' => 'home#help'
+  match '/terms_and_conditions' => 'home#terms_and_conditions'
 
   authenticated :user do
     root :to => 'home#index'

@@ -20,5 +20,11 @@
             .span4
               = yield
           %footer
+            %div
+              = mail_to 'andrewhfitz@gmail.com', 'Questions/feedback?'
+            %div
+              = link_to 'Ts & Cs', '/terms_and_conditions'
+            %div
+              = link_to 'Help', '/help'
       / ! end of .container
     / ! end of #main

@@ -9,4 +9,12 @@ class HomeController < ApplicationController
       end
     end
   end
+
+  def help
+    #nothing to do
+  end
+
+  def terms_and_conditions
+    #nothing to do
+  end
 end
