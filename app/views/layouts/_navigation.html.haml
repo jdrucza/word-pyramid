@@ -1,4 +1,4 @@
-= link_to image_tag('logo.png', size:"25x30"), root_path, :class => 'brand'
+= link_to "Word Pyramids", root_path, :class => 'brand'
 %ul.nav
   - if user_signed_in?
     %li
@@ -15,3 +15,4 @@
       = link_to 'Login', new_user_session_path
     %li
       = link_to 'Sign up', new_user_registration_path
+= link_to image_tag('logo.png', size:"39x41"), root_path, :class => 'logo pull-right'
