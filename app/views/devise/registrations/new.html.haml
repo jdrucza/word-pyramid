@@ -7,4 +7,6 @@
   = f.input :password, :required => true
   = f.input :password_confirmation, :required => true
   = f.button :submit, 'Sign up', :class => 'btn-primary'
+  %p
+    Signing up signifies that you have read and agree to the #{link_to 'Terms of Service', '/terms_and_conditions'}.
 = render "devise/shared/links"
