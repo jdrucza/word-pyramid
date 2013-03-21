@@ -152,4 +152,5 @@ $ ->
       hideSpinner()
     )
 
-  poll_for_game_changes()
+  unless game_page_vars.state.indexOf("won") > -1
+    poll_for_game_changes()
