@@ -35,18 +35,29 @@ hideSpinner = ()->
   game_page_vars['spinner'].stop()
 
 updateGame = (data)->
-  unless game_page_vars.last_word is data['current_word']
+  unless data['current_word']? and game_page_vars.last_word is data['current_word']
     $(".played_letters").append(data['current_word']+"<br/>")
     game_page_vars.last_word = data['current_word']
     location.reload(true)
+  unless data['state']? and game_page_vars.state is data['state']
+    location.reload(true)
+
+poll_for_game_changes = () ->
+  $.get(game_page_vars.game_url+'.json').always((data)->
+    updateGame(data)
+    setTimeout(poll_for_game_changes, 5000)
+  )
+
 
 $ ->
   game_page_vars.turn_form_url = $("#turn_form_url")[0].value
+  game_page_vars.game_url = $("#game_url")[0].value
   game_page_vars.game_challenge_url = $("#game_challenge_url")[0].value
   game_page_vars.game_respond_to_challenge_url = $("#game_respond_to_challenge_url")[0].value
   game_page_vars.game_use_power_up_url = $("#game_use_power_up_url")[0].value
   game_page_vars.auth_token = $("#auth_token")[0].value
   game_page_vars.last_word = $("#last_word")[0].value
+  game_page_vars.state = $("#state")[0].value
 
   if game_page_vars.is_android
     $(".pyramid input").keydown (event)->
@@ -140,3 +151,5 @@ $ ->
     ).always((data)->
       hideSpinner()
     )
+
+  poll_for_game_changes()

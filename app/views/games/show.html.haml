@@ -110,8 +110,10 @@
 
 
   =hidden_field_tag("turn_form_url", game_turns_path(@game), :id => 'turn_form_url')
+  =hidden_field_tag("game_url", game_path(@game), :id => 'game_url')
   =hidden_field_tag("game_challenge_url", challenge_game_path(@game), :id => 'game_challenge_url')
   =hidden_field_tag("game_respond_to_challenge_url", respond_to_challenge_game_path(@game), :id => 'game_respond_to_challenge_url')
   =hidden_field_tag("game_use_power_up_url", use_power_up_game_path(@game), :id => 'game_use_power_up_url')
   =hidden_field_tag("auth_token", form_authenticity_token, :id => 'auth_token')
   =hidden_field_tag("last_word", @game.current_word, :id => 'last_word')
+  =hidden_field_tag("state", @game.state, :id => 'state')
