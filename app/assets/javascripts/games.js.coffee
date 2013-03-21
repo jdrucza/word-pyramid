@@ -2,7 +2,12 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
-game_page_vars = {}
+window.game_page_vars ?= {}
+
+game_page_vars = window.game_page_vars
+
+ua = navigator.userAgent.toLowerCase()
+game_page_vars.is_android = ua.indexOf("android") > -1
 
 spinner_opts =
   lines: 15 # The number of lines to draw
@@ -33,6 +38,7 @@ updateGame = (data)->
   unless game_page_vars.last_word is data['current_word']
     $(".played_letters").append(data['current_word']+"<br/>")
     game_page_vars.last_word = data['current_word']
+    location.reload(true)
 
 $ ->
   game_page_vars.turn_form_url = $("#turn_form_url")[0].value
@@ -42,17 +48,29 @@ $ ->
   game_page_vars.auth_token = $("#auth_token")[0].value
   game_page_vars.last_word = $("#last_word")[0].value
 
-  $(".pyramid input").keypress (event)->
-    $(".pyramid input").each (index)->
-      this.value = ""
-    @value = String.fromCharCode(event.which)
-    game_page_vars.turn_letter = @value
+  if game_page_vars.is_android
+    $(".pyramid input").keydown (event)->
+      current_input_field = this
+      $(".pyramid input").each (index)->
+        this.value = "" unless this == current_input_field
+    $(".pyramid input").change (event)->
+      game_page_vars.turn_letter = @value
+    $(".prepend_letter input").change (event)->
+      game_page_vars.turn_position = "S"
 
-  $(".prepend_letter input").keypress (event)->
-    game_page_vars.turn_position = "S"
+    $(".append_letter input").change (event)->
+      game_page_vars.turn_position = "E"
+  else
+    $(".pyramid input").keypress (event)->
+      $(".pyramid input").each (index)->
+        this.value = ""
+      @value = String.fromCharCode(event.which)
+      game_page_vars.turn_letter = @value
+    $(".prepend_letter input").keypress (event)->
+      game_page_vars.turn_position = "S"
 
-  $(".append_letter input").keypress (event)->
-    game_page_vars.turn_position = "E"
+    $(".append_letter input").keypress (event)->
+      game_page_vars.turn_position = "E"
 
   $("#submit_turn").click (event)->
     $(this).attr('disabled','disabled')
@@ -68,9 +86,13 @@ $ ->
       letter: game_page_vars.turn_letter
       position: game_page_vars.turn_position
     ).done((data)->
-      hideSpinner()
       $("#prompt").html("Refresh your browser to check for your turn...")
       updateGame(data)
+    ).fail((data)->
+      alert("A Server Error Occured:       "+data.toString())
+      location.reload()
+    ).always((data)->
+      hideSpinner()
     )
 
   $("#submit_challenge").click (event)->
@@ -79,9 +101,13 @@ $ ->
     $.post(game_page_vars.game_challenge_url+'.json',
       auth_token: game_page_vars.auth_token
     ).done((data)->
-      hideSpinner()
       $("#prompt").html("Challenge issued. Refresh your browser to check for challenge response...")
       updateGame(data)
+    ).fail((data)->
+      alert("A Server Error Occured:       "+data.toString())
+      location.reload()
+    ).always((data)->
+      hideSpinner()
     )
 
   $("#submit_challenge_response").click (event)->
@@ -89,11 +115,15 @@ $ ->
     showSpinner()
     $.post(game_page_vars.game_respond_to_challenge_url+'.json',
       auth_token: game_page_vars.auth_token
-      challenge_response: $("#challenge_response")[0].value
+      challenge_response: $("#challenge_response")[0].value.toUpperCase()
     ).done((data)->
-      hideSpinner()
       $("#prompt").html("Refresh your browser to check for challenge results...")
       updateGame(data)
+    ).fail((data)->
+      alert("A Server Error Occured:       "+data.toString())
+      location.reload()
+    ).always((data)->
+      hideSpinner()
     )
 
   $("#submit_use_power_up").click (event)->
@@ -102,10 +132,11 @@ $ ->
     $.post(game_page_vars.game_use_power_up_url+'.json',
       auth_token: game_page_vars.auth_token
     ).done((data)->
-      hideSpinner()
       $("#prompt").html("Refresh your browser to check for your word suggestion...")
       updateGame(data)
+    ).fail((data)->
+      alert("A Server Error Occured:       "+data.toString())
+      location.reload()
+    ).always((data)->
+      hideSpinner()
     )
-
-  $("#challenge_response").keyup (event)->
-    @value = @value.toUpperCase()

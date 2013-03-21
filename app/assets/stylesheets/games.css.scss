@@ -22,8 +22,9 @@
   }
   #challenge, #challenge_response, #play_again {
     padding: 3px;
-    input {
+    input[type=text] {
       text-align: center;
+      text-transform: uppercase;
     }
   }
   .played_letters {
